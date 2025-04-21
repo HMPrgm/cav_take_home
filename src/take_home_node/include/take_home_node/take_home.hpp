@@ -28,12 +28,12 @@ class TakeHome : public rclcpp::Node {
   rclcpp::Subscription<raptor_dbw_msgs::msg::WheelSpeedReport>::SharedPtr wheel_speed_subscriber_;
   rclcpp::Subscription<raptor_dbw_msgs::msg::SteeringExtendedReport>::SharedPtr steering_subscriber_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_rr_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_rl_;
 
   // variables to store data
   double current_velocity_; // (m/s)
   double rear_right_speed_; // (m/s)
+  double rear_left_speed_; // (m/s)
   double steering_angle_rad_; // (rad)
-  
-  double w_r_;
 
 };

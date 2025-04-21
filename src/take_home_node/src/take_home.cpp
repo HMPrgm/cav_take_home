@@ -27,6 +27,7 @@ TakeHome::TakeHome(const rclcpp::NodeOptions &options)
 
   metric_publisher_ = this->create_publisher<std_msgs::msg::Float32>("metrics_output", qos_profile);
   slip_publisher_rr_ = this->create_publisher<std_msgs::msg::Float32>("slip/long/rr", qos_profile);
+  slip_publisher_rl_ = this->create_publisher<std_msgs::msg::Float32>("slip/long/rl", qos_profile);
 }
 
 //
@@ -48,16 +49,24 @@ void TakeHome::odometry_callback(nav_msgs::msg::Odometry::ConstSharedPtr odom_ms
   metric_publisher_->publish(metric_msg);
 
   const float w_r_ = 1.523;
-
-  //rr
   current_velocity_ = odom_msg->twist.twist.linear.x;
   float yaw_rate = odom_msg->twist.twist.angular.z;
+
+  //rr
   float v_x_rr = current_velocity_ - 0.5 * yaw_rate * w_r_;
   double slip_ratio_rr = (rear_right_speed_ - v_x_rr) / v_x_rr;
   
-  std_msgs::msg::Float32 slip_msg;
-  slip_msg.data = slip_ratio_rr;
-  slip_publisher_rr_->publish(slip_msg);
+  std_msgs::msg::Float32 slip_msg_rr;
+  slip_msg_rr.data = slip_ratio_rr;
+  slip_publisher_rr_->publish(slip_msg_rr);
+
+  //rl
+  float v_x_rl = current_velocity_ + 0.5 * yaw_rate * w_r_;
+  double slip_ratio_rl = (rear_left_speed_ - v_x_rl) / v_x_rl;
+  
+  std_msgs::msg::Float32 slip_msg_rl;
+  slip_msg_rl.data = slip_ratio_rl;
+  slip_publisher_rl_->publish(slip_msg_rl);
 }
 
 
@@ -66,6 +75,7 @@ void TakeHome::wheel_speed_callback(
     raptor_dbw_msgs::msg::WheelSpeedReport::ConstSharedPtr wheel_msg)
 {
   rear_right_speed_ = wheel_msg->rear_right * 0.277778; // kmph to m/s
+  rear_left_speed_ = wheel_msg->rear_left * 0.277778; // kmph to m/s
 }
 
 void TakeHome::steering_callback(
