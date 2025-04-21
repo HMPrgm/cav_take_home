@@ -24,9 +24,10 @@ class TakeHome : public rclcpp::Node {
   // Subscribers and Publishers
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odometry_subscriber_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr metric_publisher_;
-
+  
   rclcpp::Subscription<raptor_dbw_msgs::msg::WheelSpeedReport>::SharedPtr wheel_speed_subscriber_;
   rclcpp::Subscription<raptor_dbw_msgs::msg::SteeringExtendedReport>::SharedPtr steering_subscriber_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_rr_;
 
   // variables to store data
   double current_velocity_; // (m/s)

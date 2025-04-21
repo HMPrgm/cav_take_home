@@ -26,6 +26,7 @@ TakeHome::TakeHome(const rclcpp::NodeOptions &options)
 
 
   metric_publisher_ = this->create_publisher<std_msgs::msg::Float32>("metrics_output", qos_profile);
+  slip_publisher_rr_ = this->create_publisher<std_msgs::msg::Float32>("slip/long/rr", qos_profile);
 }
 
 //
@@ -38,22 +39,24 @@ TakeHome::TakeHome(const rclcpp::NodeOptions &options)
  */
 void TakeHome::odometry_callback(nav_msgs::msg::Odometry::ConstSharedPtr odom_msg)
 {
-  // float position_x = odom_msg->pose.pose.position.x;
-  // float position_y = odom_msg->pose.pose.position.y;
-  // float position_z = odom_msg->pose.pose.position.z;
+  float position_x = odom_msg->pose.pose.position.x;
+  float position_y = odom_msg->pose.pose.position.y;
+  float position_z = odom_msg->pose.pose.position.z;
+
+  // Do stuff with this callback! or more, idc
+  std_msgs::msg::Float32 metric_msg;
+  metric_msg.data = (position_x + position_y + position_z) / (position_x + position_z); // Example metric calculation
+  metric_publisher_->publish(metric_msg);
 
   float current_velocity_ = odom_msg->twist.twist.linear.x;
   double slip_ratio_rr = (rear_right_speed_ - current_velocity_) / current_velocity_;
-  slip_ratio_rr = 0;
-  // Do stuff with this callback! or more, idc
-  std_msgs::msg::Float32 metric_msg;
-  metric_msg.data = slip_ratio_rr; // Example metric calculation
-  metric_publisher_->publish(metric_msg);
   
-  // std_msgs::msg::Float32 slip_msg;
-  // slip_msg.data = slip_ratio_rr;
-  // slip_publisher_rr_->publish(slip_msg);
+  std_msgs::msg::Float32 slip_msg;
+  slip_msg.data = slip_ratio_rr;
+  slip_publisher_rr_->publish(slip_msg);
 }
+
+
 
 void TakeHome::wheel_speed_callback(
     raptor_dbw_msgs::msg::WheelSpeedReport::ConstSharedPtr wheel_msg)
