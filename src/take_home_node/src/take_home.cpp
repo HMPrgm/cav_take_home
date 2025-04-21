@@ -42,14 +42,18 @@ void TakeHome::odometry_callback(nav_msgs::msg::Odometry::ConstSharedPtr odom_ms
   float position_x = odom_msg->pose.pose.position.x;
   float position_y = odom_msg->pose.pose.position.y;
   float position_z = odom_msg->pose.pose.position.z;
-
   // Do stuff with this callback! or more, idc
   std_msgs::msg::Float32 metric_msg;
   metric_msg.data = (position_x + position_y + position_z) / (position_x + position_z); // Example metric calculation
   metric_publisher_->publish(metric_msg);
 
-  float current_velocity_ = odom_msg->twist.twist.linear.x;
-  double slip_ratio_rr = (rear_right_speed_ - current_velocity_) / current_velocity_;
+  const float w_r_ = 1.523;
+
+  //rr
+  current_velocity_ = odom_msg->twist.twist.linear.x;
+  float yaw_rate = odom_msg->twist.twist.angular.z;
+  float v_x_rr = current_velocity_ - 0.5 * yaw_rate * w_r_;
+  double slip_ratio_rr = (rear_right_speed_ - v_x_rr) / v_x_rr;
   
   std_msgs::msg::Float32 slip_msg;
   slip_msg.data = slip_ratio_rr;
@@ -62,7 +66,6 @@ void TakeHome::wheel_speed_callback(
     raptor_dbw_msgs::msg::WheelSpeedReport::ConstSharedPtr wheel_msg)
 {
   rear_right_speed_ = wheel_msg->rear_right * 0.277778; // kmph to m/s
-  // TODO: Repeat for rear_left, front_left, front_right
 }
 
 void TakeHome::steering_callback(

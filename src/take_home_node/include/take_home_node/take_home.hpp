@@ -33,5 +33,7 @@ class TakeHome : public rclcpp::Node {
   double current_velocity_; // (m/s)
   double rear_right_speed_; // (m/s)
   double steering_angle_rad_; // (rad)
+  
+  double w_r_;
 
 };
