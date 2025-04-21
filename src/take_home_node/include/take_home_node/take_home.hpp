@@ -7,6 +7,7 @@
 #include <rclcpp/node.hpp>
 #include <rclcpp/node_options.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <cmath>
 
 #include <raptor_dbw_msgs/msg/wheel_speed_report.hpp>
 #include <raptor_dbw_msgs/msg/steering_extended_report.hpp>
@@ -29,11 +30,15 @@ class TakeHome : public rclcpp::Node {
   rclcpp::Subscription<raptor_dbw_msgs::msg::SteeringExtendedReport>::SharedPtr steering_subscriber_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_rr_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_rl_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_fr_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_fl_;
 
   // variables to store data
   double current_velocity_; // (m/s)
   double rear_right_speed_; // (m/s)
   double rear_left_speed_; // (m/s)
+  double front_right_speed_; // (m/s)
+  double front_left_speed_; // (m/s)
   double steering_angle_rad_; // (rad)
 
 };
