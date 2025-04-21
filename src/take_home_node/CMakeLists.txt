@@ -39,6 +39,7 @@ ament_target_dependencies(${PROJECT_NAME}
   ament_index_cpp
   uva_iac_msgs
   deep_orange_msgs
+  raptor_dbw_msgs
 )
 
 # Install the library
