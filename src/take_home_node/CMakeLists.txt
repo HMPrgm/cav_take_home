@@ -14,6 +14,7 @@ find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(raptor_dbw_msgs REQUIRED)
+find_package(novatel_oem7_msgs REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(uva_iac_msgs REQUIRED)
 find_package(deep_orange_msgs REQUIRED)
@@ -40,6 +41,7 @@ ament_target_dependencies(${PROJECT_NAME}
   uva_iac_msgs
   deep_orange_msgs
   raptor_dbw_msgs
+  novatel_oem7_msgs
 )
 
 # Install the library

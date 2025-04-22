@@ -12,6 +12,9 @@
 #include <raptor_dbw_msgs/msg/wheel_speed_report.hpp>
 #include <raptor_dbw_msgs/msg/steering_extended_report.hpp>
 
+#include <novatel_oem7_msgs/msg/rawimu.hpp>
+#include <deque>
+
 class TakeHome : public rclcpp::Node {
  public:
   TakeHome(const rclcpp::NodeOptions& options);
@@ -19,6 +22,7 @@ class TakeHome : public rclcpp::Node {
   void odometry_callback(nav_msgs::msg::Odometry::ConstSharedPtr odom_msg);
   void wheel_speed_callback(raptor_dbw_msgs::msg::WheelSpeedReport::ConstSharedPtr odom_msg);
   void steering_callback(raptor_dbw_msgs::msg::SteeringExtendedReport::ConstSharedPtr odom_msg);
+  void jitter_callback(novatel_oem7_msgs::msg::RAWIMU::ConstSharedPtr imu_msg);
 
  private:
 
@@ -32,6 +36,9 @@ class TakeHome : public rclcpp::Node {
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_rl_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_fr_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr slip_publisher_fl_;
+  
+  rclcpp::Subscription<novatel_oem7_msgs::msg::RAWIMU>::SharedPtr raw_imu_subscriber_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr jitter_publisher_;
 
   // variables to store data
   double current_velocity_; // (m/s)
@@ -40,5 +47,6 @@ class TakeHome : public rclcpp::Node {
   double front_right_speed_; // (m/s)
   double front_left_speed_; // (m/s)
   double steering_angle_rad_; // (rad)
+  std::deque<rclcpp::Time> imu_timestamps_;
 
 };
